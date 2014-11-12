@@ -26,11 +26,6 @@ public class ShopController {
         List<Category> cats = srv.getCategoryList();
         model.addAttribute("cats", cats);
         
-        Basket basket = (Basket) model.get("basket");
-        if (basket == null) {
-            basket = new Basket();
-            model.addAttribute("basket", basket);
-        }
         
         return "categories";
     }
@@ -43,13 +38,6 @@ public class ShopController {
         List<Good> goods = srv.getList(id);
         model.addAttribute("goods", goods);
         
-        Basket basket = (Basket) model.get("basket");
-        if (basket == null) {
-            basket = new Basket();
-            
-        }
-        
-        model.addAttribute("basket", basket);
         return "goodlist";
     }
     

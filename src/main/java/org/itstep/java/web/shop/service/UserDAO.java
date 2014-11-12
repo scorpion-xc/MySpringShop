@@ -135,42 +135,6 @@ public class UserDAO implements UserService, UserDetailsService {
     }
 
     @Override
-    public User authenticate(String login, String pass) {
-        User user = null;
-        
-        String query = "SELECT * FROM users where email = ? and password = ?";
-        ResultSet rs = null;
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(query);
-            stmt.setString(1, login);
-            stmt.setString(2, pass);
-            rs = stmt.executeQuery();
-
-
-            if (rs.next()) {
-                user = new User();
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-            }
-        } catch (SQLException e) {
-            System.err.println("SQL ERROR! " + e.getMessage());
-            return null;
-        } finally {
-            try {
-                rs.close();
-                stmt.close();
-            } catch (SQLException e) {
-                System.err.println("SQL ERROR! " + e.getMessage());
-            } catch (NullPointerException e) {
-                System.err.println("NULL POINTER ERROR! " + e.getMessage());
-            }
-        }
-        return user;
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
         User user = null;
         
