@@ -23,11 +23,12 @@ import org.springframework.stereotype.Repository;
  * @author andrii
  */
 @Repository(value = "userDAO")
-public class UserDAO {
+public class UserDAO implements UserService {
     Properties props;
     @Autowired
     Connection conn;
     
+    @Override
     public List<User> findAll() throws SQLException {
         List<User> users = new ArrayList<>();
         
@@ -61,18 +62,22 @@ public class UserDAO {
         return users;
     }
     
-    public boolean save(User u) {
+    @Override
+    public int save(User u) {
         String query = "INSERT INTO users (name, email, password) values (?,?,?)";
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, u.getName());
             stmt.setString(2, u.getEmail());
             stmt.setString(3, u.getPassword());
             
-            return stmt.execute();
+            stmt.execute();
+            ResultSet rs = stmt.getGeneratedKeys();
+            rs.next();
+            return rs.getInt(1);
         } catch (SQLException e) {
-            return false;
+            return 0;
         } finally {
             try {
                 stmt.close();
@@ -84,6 +89,7 @@ public class UserDAO {
         }
     }
     
+    @Override
     public User find(Integer id) {
         User user = null;
         

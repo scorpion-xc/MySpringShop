@@ -10,6 +10,7 @@
           http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
     
     <context:component-scan base-package="org.itstep.java.jdbc.simplemvc" />
+    <context:component-scan base-package="org.itstep.java.spring.mvc" />
     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
@@ -18,4 +19,9 @@
         <property name="password" value="mypassword"></property>
     </bean>
     <bean id="connection" class="java.sql.Connection" factory-bean="dataSource" factory-method="getConnection" />
+    
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
 </beans>
