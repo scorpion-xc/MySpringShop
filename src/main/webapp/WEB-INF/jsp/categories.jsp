@@ -24,17 +24,20 @@
         
         <div class="container">
             <div class="jumbotron">
-                <h1>${current.name}'s Profile</h1>
+                <h1>Browse categories</h1>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Selected User</h3>
+                            <h3 class="panel-title">Categories</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${user.name}</div>
-                            <div>${user.email}</div>
+                            <ul>
+                                <c:forEach items="${cats}" var="cat">
+                                    <li><a class="button" href="<c:url value="/shop/category/${cat.id}" />"> ${cat.name}</a></li>
+                                </c:forEach>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -42,11 +45,14 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Current User</h3>
+                            <h3 class="panel-title">Basket</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${current.name}</div>
-                            <div>${current.email}</div>
+                            <ul>
+                                <c:forEach items="${basket}" var="item">
+                                    <li>${item.value.good.name} : <span>${item.value.count}</span></li>
+                                </c:forEach>
+                            </ul>
                         </div>
                     </div>
                 </div>

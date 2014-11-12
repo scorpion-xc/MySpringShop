@@ -16,7 +16,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="<c:url value="/user/login" />"> Login</a> </li>  
                     <li><a href="<c:url value="/shop" />">Browse categories</a></li>
-                    <li><a href="<c:url value="/user/show" />">Profile</a></li>   
+                    <li><a href="<c:url value="/user/show" />">Profile</a></li>
                     <li><a href="<c:url value="/user/logout" />">Logout</a></li>
                 </ul>
             </div>
@@ -24,17 +24,20 @@
         
         <div class="container">
             <div class="jumbotron">
-                <h1>${current.name}'s Profile</h1>
+                <h1>Browse categories</h1>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Selected User</h3>
+                            <h3 class="panel-title">Categories</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${user.name}</div>
-                            <div>${user.email}</div>
+                            <ul>
+                                <c:forEach items="${goods}" var="good">
+                                    <li>${good.name}<a href="<c:url value="/shop/add/${good.catId}/${good.id}" />">Add to basket</a></li>
+                                </c:forEach>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -42,11 +45,14 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Current User</h3>
+                            <h3 class="panel-title">Basket</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${current.name}</div>
-                            <div>${current.email}</div>
+                            <ul>
+                                <c:forEach items="${basket}" var="item">
+                                    <li>${item.value.good.name} : <span>${item.value.count}</span></li>
+                                </c:forEach>
+                            </ul>
                         </div>
                     </div>
                 </div>

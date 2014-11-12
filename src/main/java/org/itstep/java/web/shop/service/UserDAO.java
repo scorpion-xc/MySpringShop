@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.itstep.java.jdbc.simplemvc;
+package org.itstep.java.web.shop.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,10 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import org.itstep.java.lesson1.User;
+import org.itstep.java.web.shop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,7 +28,7 @@ import org.springframework.stereotype.Repository;
  * @author andrii
  */
 @Repository(value = "userDAO")
-public class UserDAO implements UserService {
+public class UserDAO implements UserService, UserDetailsService {
     Properties props;
     @Autowired
     Connection conn;
@@ -121,10 +126,83 @@ public class UserDAO implements UserService {
                 System.err.println("NULL POINTER ERROR! " + e.getMessage());
             }
         }
+        
         return user;
     }
     
     public void close() throws SQLException {
         conn.close();
+    }
+
+    @Override
+    public User authenticate(String login, String pass) {
+        User user = null;
+        
+        String query = "SELECT * FROM users where email = ? and password = ?";
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, login);
+            stmt.setString(2, pass);
+            rs = stmt.executeQuery();
+
+
+            if (rs.next()) {
+                user = new User();
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL ERROR! " + e.getMessage());
+            return null;
+        } finally {
+            try {
+                rs.close();
+                stmt.close();
+            } catch (SQLException e) {
+                System.err.println("SQL ERROR! " + e.getMessage());
+            } catch (NullPointerException e) {
+                System.err.println("NULL POINTER ERROR! " + e.getMessage());
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
+        User user = null;
+        
+        String query = "SELECT * FROM users where email = ?";
+        ResultSet rs = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, string);
+            rs = stmt.executeQuery();
+
+
+            if (rs.next()) {
+                user = new User();
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL ERROR! " + e.getMessage());
+            return null;
+        } finally {
+            try {
+                rs.close();
+                stmt.close();
+            } catch (SQLException e) {
+                System.err.println("SQL ERROR! " + e.getMessage());
+            } catch (NullPointerException e) {
+                System.err.println("NULL POINTER ERROR! " + e.getMessage());
+            }
+        }
+        if (user == null) throw new UsernameNotFoundException("User " + string + " not found!");
+        return user;
     }
 }

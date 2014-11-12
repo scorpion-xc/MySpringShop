@@ -4,11 +4,11 @@
  * and open the template in the editor.
  */
 
-package org.itstep.java.jdbc.simplemvc;
+package org.itstep.java.web.shop.service;
 
 import java.sql.SQLException;
 import java.util.List;
-import org.itstep.java.lesson1.User;
+import org.itstep.java.web.shop.model.User;
 
 /**
  *
@@ -19,5 +19,5 @@ public interface UserService {
     User find(Integer id);
     List<User> findAll() throws SQLException;
     int save(User u);
-    
+    User authenticate(String login, String pass);
 }
