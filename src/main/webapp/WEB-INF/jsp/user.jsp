@@ -24,7 +24,7 @@
         
         <div class="container">
             <div class="jumbotron">
-                <h1>${current.name}'s Profile</h1>
+                <h1>${current.name}'s profile</h1>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -33,8 +33,27 @@
                             <h3 class="panel-title">Selected User</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${user.name}</div>
-                            <div>${user.email}</div>
+//----------  
+                            <div>
+                                <c:if test="${current.isAdmin}">
+                                    <c:forEach items="${users}" var="user">
+                                        <li>${user.name}<br/>
+                                            id: ${user.id}<br/>
+                                            e-mail: ${user.email}<br/>
+                                            Password: ${user.password}<br/>
+                                            Admin: <c:if test="${user.isAdmin}">Yes </c:if><c:if test="${!user.isAdmin}">No </c:if><br/>
+                                            <a class="btn btn-info" href="<c:url value="/user/editUser/${user.id}" />">Edit</a>
+                                            <a class="btn btn-danger" href="<c:url value="/user/delete/${user.id}" />">Delete</a><br/></li>
+                                    </c:forEach> 
+                                    <br/><div><a class="btn btn-success" href="<c:url value="/user/addUser" />">Add user</a></div> 
+                                </c:if>
+                            </div>
+                            <div>
+                                <c:if test="${!current.isAdmin}">
+                                    ${current.name}, this information is closed for you!
+                                </c:if>
+                            </div>
+//----------  
                         </div>
                     </div>
                 </div>
@@ -45,8 +64,10 @@
                             <h3 class="panel-title">Current User</h3>
                         </div>
                         <div class="panel-body">
-                            <div>${current.name}</div>
-                            <div>${current.email}</div>
+                            <div>Name: ${current.name}</div>
+                            <div>e-mail: ${current.email}</div>
+                            <div>Admin: ${current.isAdmin}</div>
+                            
                         </div>
                     </div>
                 </div>

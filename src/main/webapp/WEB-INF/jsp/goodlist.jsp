@@ -30,12 +30,19 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Categories</h3>
+                            <h3 class="panel-title">Доступные товары из категории</h3>
                         </div>
                         <div class="panel-body">
                             <ul>
                                 <c:forEach items="${goods}" var="good">
-                                    <li>${good.name}<a href="<c:url value="/shop/add/${good.catId}/${good.id}" />">Add to basket</a></li>
+                                    <li>Наименование товара: ${good.name}<br/>
+                                        Цена: ${good.price}<br/>
+                                        <a class="btn btn-success" href="<c:url value="/shop/add/${good.catId}/${good.id}" />">Купить</a>
+                                        <c:if test="${current.isAdmin}">
+                                            <a class="btn btn-info" href="<c:url value="/shop/editGood/${good.catId}/${good.id}" />">Редактировать товар</a>
+                                            <a class="btn btn-danger" href="<c:url value="/shop/delete/${good.catId}/${good.id}" />">Удалить товар</a>
+                                        </c:if>
+                                    </li>
                                 </c:forEach>
                             </ul>
                         </div>
@@ -45,14 +52,21 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Basket</h3>
+                            <h3 class="panel-title">Корзина</h3>
                         </div>
                         <div class="panel-body">
                             <ul>
                                 <c:forEach items="${basket}" var="item">
-                                    <li>${item.value.good.name} : <span>${item.value.count}</span></li>
+                                     <li>Наименование товара: ${item.value.good.name}<br/>
+                                         Кол-во: ${item.value.count}
+                                         Цена: ${item.value.price}<br/>
+                                         <a class="btn btn-danger" href="<c:url value="/shop/deleteGoodInBasket/${item.value.good.catId}/${item.value.good.id}" />">Удалить товар из корзины</a>
+                                     </li>
                                 </c:forEach>
                             </ul>
+                            <div>
+                                <a class="btn btn-success" href="<c:url value="/shop/orderAdd" />">Оформить заказ</a>  
+                            </div>
                         </div>
                     </div>
                 </div>

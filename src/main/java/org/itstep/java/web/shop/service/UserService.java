@@ -17,6 +17,11 @@ import org.itstep.java.web.shop.model.User;
 public interface UserService {
 
     User find(Integer id);
-    List<User> findAll() throws SQLException;
+//    List<User> findAll(); throws SQLException;
+    List<User> findAll();
     int save(User u);
+//   boolean authorize(String name, String password);
+    boolean deleteUser(Integer id);
+    boolean edit(User u);
+
 }

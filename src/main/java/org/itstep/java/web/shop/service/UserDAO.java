@@ -34,7 +34,8 @@ public class UserDAO implements UserService, UserDetailsService {
     Connection conn;
     
     @Override
-    public List<User> findAll() throws SQLException {
+//    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
         List<User> users = new ArrayList<>();
         
         String query = "SELECT * FROM users";
@@ -45,9 +46,13 @@ public class UserDAO implements UserService, UserDetailsService {
             rs = stmt.executeQuery(query);
             while (rs.next()) {
                 User u = new User();
+                u.setId(rs.getInt("id"));
                 u.setName(rs.getString("name"));
                 u.setEmail(rs.getString("email"));
                 u.setPassword(rs.getString("password"));
+//----------                                
+                u.setIsAdmin(rs.getBoolean("isAdmin"));
+//----------                                
                 users.add(u);
             }
             
@@ -67,16 +72,40 @@ public class UserDAO implements UserService, UserDetailsService {
         return users;
     }
     
+//---------- 
+    @Override
+    public boolean deleteUser(Integer id) {
+        
+        String query = "DELETE FROM users where id=?";
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);
+            return stmt.execute();
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                System.err.println("Can't close the ststement! " + e.getMessage());
+            }
+        }       
+    }   
+//---------- 
+    
     @Override
     public int save(User u) {
-        String query = "INSERT INTO users (name, email, password) values (?,?,?)";
+        String query = "INSERT INTO users (name, email, password, isAdmin) values (?,?,?,?)";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, u.getName());
             stmt.setString(2, u.getEmail());
-            stmt.setString(3, u.getPassword());
-            
+            stmt.setString(3, u.getPassword());            
+            stmt.setBoolean(4, u.isIsAdmin());
+           
             stmt.execute();
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();
@@ -90,6 +119,32 @@ public class UserDAO implements UserService, UserDetailsService {
                 System.err.println("Can't close the statement! " + e.getMessage() );
             } catch (NullPointerException e) {
                 System.err.println("NULL POINTER ERROR! " + e.getMessage());
+            }
+        }
+    }
+    
+    @Override
+    public boolean edit(User u) {   
+        String query = "UPDATE users SET name=?, email=?, password=?,isAdmin=? where id=?";
+        PreparedStatement stmt = null;
+            try {
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, u.getName());
+            stmt.setString(2, u.getEmail());
+            stmt.setString(3, u.getPassword());
+            stmt.setBoolean(4, u.isIsAdmin());
+            stmt.setInt(5, u.getId());
+            //stmt.setInt(5, 27);
+            
+            return stmt.execute();
+         
+        }catch (SQLException e) {
+            return false;
+        } finally {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                System.err.println("Can't close the statement! " + e.getMessage());
             }
         }
     }
@@ -109,9 +164,11 @@ public class UserDAO implements UserService, UserDetailsService {
 
             if (rs.next()) {
                 user = new User();
+                user.setId(rs.getInt("id"));
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
+                user.setIsAdmin(rs.getBoolean("isAdmin"));
             }
         } catch (SQLException e) {
             System.err.println("SQL ERROR! " + e.getMessage());
@@ -152,6 +209,9 @@ public class UserDAO implements UserService, UserDetailsService {
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
+//---------- 
+                user.setIsAdmin(rs.getBoolean("isAdmin"));
+//---------- 
             }
         } catch (SQLException e) {
             System.err.println("SQL ERROR! " + e.getMessage());
